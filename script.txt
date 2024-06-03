@@ -1,0 +1,21 @@
+@app.route('/api/v1', methods = ['GET', 'POST'])
+def fnc():
+    if request.method == 'POST':
+        item = {}
+        item['title'] = request.json['title']
+        item['decs'] = request.json['decs']
+        item['isComplete'] = False
+        mongo.todos.insert_one(item)
+        return {"msg":"todo add successfully"}
+    else:
+        todos = mongo.todos.find({})
+        items = []
+        for todo in todos:
+            item = {
+                "id":str(todo['_id']),
+                "title":todo['title'],
+                "decs":todo['decs'],
+                "isComplete":todo['isComplete'],
+            }
+            items.append(item)
+        return jsonify(items)
